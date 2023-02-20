@@ -1,0 +1,6 @@
+text_mode: center-aligned
+text_options:
+  fontsize: 78
+  fontcolor: black
+# video / image
+background_mode: image

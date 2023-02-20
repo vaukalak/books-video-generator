@@ -2,4 +2,5 @@ node_modules/
 out/
 resource/
 .vscode/
-.DS_Store/
+.DS_Store
+**/.DS_Store

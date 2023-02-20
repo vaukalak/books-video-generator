@@ -1,3 +1,6 @@
+const { exec } = require("./exec");
+const { fid } = require("./getChapterNames");
+
 const getTimings = async (context, stories) => {
   const { book } = context;
   let startTime = 0;
@@ -13,11 +16,12 @@ const getTimings = async (context, stories) => {
     )
   ).map((v) => {
     const duration = parseFloat(v, 10);
-    startTime += duration;
-    return {
+    const result = {
       duration,
       startTime,
     };
+    startTime += duration;
+    return result;
   });
 };
 
