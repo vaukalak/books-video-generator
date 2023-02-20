@@ -11,7 +11,7 @@ const sleep = async () => {
 
 const clean = (context) => {
   try {
-    fs.rmSync(`out/${context.bookName}`, { force: true, recursive: true });
+    fs.rmSync(`out/${context.book}`, { force: true, recursive: true });
   } catch {}
 };
 

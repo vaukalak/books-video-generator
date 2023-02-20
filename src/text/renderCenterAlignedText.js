@@ -1,3 +1,5 @@
+const { fid } = require("../getChapterNames");
+
 const createDrawText = (context, text, off) => {
   const { config, book } = context;
   const text_h = 100;
@@ -11,7 +13,12 @@ const createDrawText = (context, text, off) => {
 };
 
 const renderCenterAlignedText = (context) => (chapters, chpaterIndex) => {
-  const lines = chapters[chpaterIndex].name.split("\n");
+  const chapterName = chapters[chpaterIndex].name;
+  const isFirstOrLast = chpaterIndex === 0 || chpaterIndex === chapters.length - 1;
+  const text = isFirstOrLast
+    ? chapterName
+    : `#${fid(chpaterIndex)}\\:${chapterName}`;
+  const lines = text.split("\n");
   const allText = lines.map((line, i) => {
     const offsetY = Math.floor(-lines.length / 2) + 1 + i;
     return createDrawText(context, line, offsetY);

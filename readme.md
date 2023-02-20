@@ -41,5 +41,6 @@ text_options:
   fontsize: 78
   fontcolor: black
 # video / image
+# калі ўказаць video, будзе шукаць файл `resource/НАЗВА/background.mp4`
 background_mode: image
 ```
