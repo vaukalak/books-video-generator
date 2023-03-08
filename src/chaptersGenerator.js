@@ -22,6 +22,7 @@ const chaptersGenerator = async (context) => {
   const stories = await getChapterNames(context);
   const timings = await getTimings(context, stories);
 
+  console.log('\nGenerating videos for each chapter:');
   for (let i = 0; i < stories.length; i++) {
     const story = stories[i];
     const fileName = fid(story.id);

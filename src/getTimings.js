@@ -4,6 +4,7 @@ const { fid } = require("./getChapterNames");
 const getTimings = async (context, stories) => {
   const { book } = context;
   let startTime = 0;
+  console.log('\nGetting audio files lengths:');
   return (
     await Promise.all(
       stories.map((s) => {
