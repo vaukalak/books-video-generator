@@ -2,5 +2,8 @@ text_mode: center-aligned
 text_options:
   fontsize: 78
   fontcolor: black
-# video / image
+
+# Allowed options: video / image
+# Supported image formats: jpg, png.
+# Supported video format: mp4.
 background_mode: image
