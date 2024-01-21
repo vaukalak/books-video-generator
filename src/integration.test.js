@@ -1,5 +1,5 @@
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const {exec} = require('./exec');
 const path = require('path');
 
@@ -12,13 +12,9 @@ async function getDurationSec(file) {
     return Number(len);
 }
 
-beforeEach(() => {
-    if (fs.existsSync(RESOURCES_DIR)) {
-        fs.rmSync(RESOURCES_DIR, {recursive: true});
-    }
-    if (fs.existsSync(OUT_DIR)) {
-        fs.rmSync(OUT_DIR, {recursive: true});
-    }
+beforeEach(async () => {
+    await fs.remove(RESOURCES_DIR);
+    await fs.remove(OUT_DIR);
 });
 
 function assertOutputOfCreateTimecodesMatches(output) {
