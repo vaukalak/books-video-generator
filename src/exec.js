@@ -1,9 +1,9 @@
 const cp = require("child_process");
 
-const exec = (command) => {
+const exec = (command, options = {}) => {
   return new Promise((res, rej) => {
     console.log(command);
-    cp.exec(command, function (err, stdout, stderr) {
+    cp.exec(command, options, (err, stdout, stderr) => {
       if (err) {
         console.error(err);
         rej(new Error(err));
