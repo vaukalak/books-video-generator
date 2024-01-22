@@ -1,5 +1,5 @@
-#!/usr/bin/env node
-const fs = require("fs-extra");
+#!/usr/bin/env -S npx ts-node --files
+import * as fs from "fs-extra";
 
 const book = process.env.BOOK;
 

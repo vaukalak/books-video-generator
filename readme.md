@@ -10,7 +10,7 @@
 
 ### Стварыць кнігу
 
-`BOOK=vostrau ./add-book.js`
+`BOOK=vostrau ./add-book.ts`
 
 Створыць каталог `resource/vostrau` з базавым наборам для генерацыі кнігі
 
@@ -22,7 +22,7 @@
 
 ### Склеіць главы
 
-`BOOK=vostrau ./concat-chapters.js`
+`BOOK=vostrau ./concat-chapters.ts`
 
 Ствоорыць ў `out/vostrau/` фінальнае відэа
 
@@ -43,4 +43,11 @@ text_options:
 # video / image
 # калі ўказаць video, будзе шукаць файл `resource/НАЗВА/background.mp4`
 background_mode: image
+```
+
+# Распрацоўка
+
+Запусіць TypeScript кампілярат падчас распрацоўкі:
+```
+npm run compile
 ```
