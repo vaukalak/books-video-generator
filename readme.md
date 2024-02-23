@@ -16,7 +16,7 @@
 
 ### Згенерыць главы
 
-`BOOK=vostrau ./generate-chapters.js`
+`BOOK=vostrau ./generate-chapters.ts`
 
 Згенеруе главы ў каталог `out/vostrau/chapters`
 
@@ -28,7 +28,7 @@
 
 ### Стварыць таймкоды
 
-`BOOK=vostrau ./create-timecodes.js`
+`BOOK=vostrau ./create-timecodes.ts`
 
 вывядзе таймкоды ў кансоль
 
