@@ -10,25 +10,25 @@
 
 ### Стварыць кнігу
 
-`BOOK=vostrau ./add-book.js`
+`BOOK=vostrau ./add-book.ts`
 
 Створыць каталог `resource/vostrau` з базавым наборам для генерацыі кнігі
 
 ### Згенерыць главы
 
-`BOOK=vostrau ./generate-chapters.js`
+`BOOK=vostrau ./generate-chapters.ts`
 
 Згенеруе главы ў каталог `out/vostrau/chapters`
 
 ### Склеіць главы
 
-`BOOK=vostrau ./concat-chapters.js`
+`BOOK=vostrau ./concat-chapters.ts`
 
 Ствоорыць ў `out/vostrau/` фінальнае відэа
 
 ### Стварыць таймкоды
 
-`BOOK=vostrau ./create-timecodes.js`
+`BOOK=vostrau ./create-timecodes.ts`
 
 вывядзе таймкоды ў кансоль
 
@@ -43,4 +43,11 @@ text_options:
 # video / image
 # калі ўказаць video, будзе шукаць файл `resource/НАЗВА/background.mp4`
 background_mode: image
+```
+
+# Распрацоўка
+
+Запусіць TypeScript кампілярат падчас распрацоўкі:
+```
+npm run compile
 ```

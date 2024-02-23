@@ -4,3 +4,4 @@ resource/
 .vscode/
 .DS_Store
 **/.DS_Store
+dist/
