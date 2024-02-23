@@ -1,16 +1,23 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S npx ts-node --files
 
-const { context } = require("./src/context");
-const { chaptersGenerator } = require("./src/chaptersGenerator");
-const {
+// @ts-ignore
+import { context } from "./src/context";
+// @ts-ignore
+import { chaptersGenerator } from "./src/chaptersGenerator";
+// @ts-ignore
+import {
   renderImageBackground,
-} = require("./src/background/renderImageBackground");
-const {
+  // @ts-ignore
+} from "./src/background/renderImageBackground";
+// @ts-ignore
+import {
   renderVideoBackground,
-} = require("./src/background/renderVideoBackground");
-const {
+  // @ts-ignore
+} from "./src/background/renderVideoBackground";
+import {
   renderCenterAlignedText,
-} = require("./src/text/renderCenterAlignedText");
+  // @ts-ignore
+} from "./src/text/renderCenterAlignedText";
 
 (async () => {
   context.renderBackground =
