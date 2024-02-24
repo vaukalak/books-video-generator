@@ -1,22 +1,15 @@
 #!/usr/bin/env -S npx ts-node --files
 
-// @ts-ignore
 import { context } from "./src/context";
-// @ts-ignore
 import { chaptersGenerator } from "./src/chaptersGenerator";
-// @ts-ignore
 import {
   renderImageBackground,
-  // @ts-ignore
 } from "./src/background/renderImageBackground";
-// @ts-ignore
 import {
   renderVideoBackground,
-  // @ts-ignore
 } from "./src/background/renderVideoBackground";
 import {
   renderCenterAlignedText,
-  // @ts-ignore
 } from "./src/text/renderCenterAlignedText";
 
 (async () => {

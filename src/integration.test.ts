@@ -2,7 +2,6 @@
 import {beforeEach, describe, expect, test} from '@jest/globals';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-// @ts-ignore
 import {exec} from './exec';
 
 const TEST_BOOK = 'test_book';

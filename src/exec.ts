@@ -1,17 +1,15 @@
-const cp = require("child_process");
+import * as cp from "child_process";
 
-const exec = (command, options = {}) => {
+export async function exec(command: string, options: cp.ExecOptions = {}): Promise<string> {
   return new Promise((res, rej) => {
     console.log(command);
     cp.exec(command, options, (err, stdout, stderr) => {
       if (err) {
         console.error(err);
-        rej(new Error(err));
+        rej(err);
       } else {
         res(stdout);
       }
     });
   });
-};
-
-module.exports = { exec };
+}

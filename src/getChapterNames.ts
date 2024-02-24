@@ -1,13 +1,15 @@
-const fs = require("fs");
-const { parse } = require("csv-parse");
-const { finished } = require("stream/promises");
-const { exec } = require("./exec");
+import * as fs from "fs";
+import { parse } from "csv-parse";
+import { finished } from"stream/promises";
+import { Chapter, Context } from "./context";
 
-const fid = (s) => `${"0".repeat(3 - s.toString().length)}${s}`;
+export function fid(id: number): string {
+  return `${"0".repeat(3 - id.toString().length)}${id}`;
+}
 
-const getChapterNames = async (context) => {
+export async function getChapterNames(context: Context): Promise<Chapter[]> {
   const { book } = context;
-  const records = [];
+  const records: Array<[number, string]> = [];
   const parser = fs.createReadStream(`resource/${book}/chapters.csv`).pipe(
     parse({
       // CSV options if any
@@ -22,9 +24,5 @@ const getChapterNames = async (context) => {
   });
   await finished(parser);
   return records.slice(1).map(([id, name]) => ({ id, name }));
-};
+}
 
-module.exports = {
-  fid,
-  getChapterNames,
-};

@@ -1,9 +1,7 @@
 #!/usr/bin/env -S npx ts-node --files
 
 import * as fs from "fs-extra";
-// @ts-ignore
 import { context } from "./src/context";
-// @ts-ignore
 import { exec } from "./src/exec";
 
 (async () => {
