@@ -1,7 +1,6 @@
-text_mode: center-aligned
 text_options:
-  fontsize: 78
-  fontcolor: black
+  font_size: 78
+  font_color: black
 
 # Allowed options: video / image
 # Supported image formats: jpg, png.
