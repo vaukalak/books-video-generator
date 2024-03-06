@@ -1,8 +1,7 @@
 
-import { createDecipheriv } from "crypto";
 import { Chapter, Context } from "../context";
 
-const createDrawText = (context: Context, text: string) => {
+function createDrawText(context: Context, text: string) {
   const textOptions = context.config.text_options;
   const components = [
     `x=${textOptions.x}`,
@@ -18,7 +17,7 @@ const createDrawText = (context: Context, text: string) => {
     components.push(`font=${textOptions.font}`);
   }
   return `drawtext=${components.join(':')}`;
-};
+}
 
 export function renderCenterAlignedText(context: Context) {
   return (chapter: Chapter) => {
