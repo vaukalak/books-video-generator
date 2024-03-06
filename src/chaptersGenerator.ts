@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import { exec } from "./exec";
-import { getTimings } from "./getTimings";
-import { getChapterNames, fid } from "./getChapterNames";
+import { getChapters } from "./chapters";
 import { Context } from "./context";
 
 async function sleep(): Promise<undefined> {
@@ -12,28 +11,26 @@ async function sleep(): Promise<undefined> {
 
 function clean(context: Context) {
   try {
-    fs.rmSync(`out/${context.book}`, { force: true, recursive: true });
+    fs.rmSync(context.outDir, { force: true, recursive: true });
   } catch {}
 }
 
 export async function chaptersGenerator(context: Context) {
   const { book } = context;
   clean(context);
-  fs.mkdirSync(`out/${book}/chapters`, { recursive: true });
-  const stories = await getChapterNames(context);
-  const timings = await getTimings(context, stories);
+  fs.mkdirSync(`${context.outDir}/chapters`, { recursive: true });
+  const chapters = await getChapters(context);
 
   console.log('\nGenerating videos for each chapter:');
-  for (let i = 0; i < stories.length; i++) {
-    const story = stories[i];
-    const fileName = fid(story.id);
+  for (let i = 0; i < chapters.length; i++) {
+    const chapter = chapters[i];
 
     const inclusions = `${context.renderBackground(
-      timings[i]
-    )} -i resource/${book}/audio/${fileName}.mp3 -shortest -map 0:v -map 1:a`;
-    const drawText = `-filter_complex "${context.renderText(stories, i)}"`;
+      chapter.timing
+    )} -i ${chapter.sourceAudioFile} -shortest -map 0:v -map 1:a`;
+    const drawText = `-filter_complex "${context.renderText(chapter)}"`;
     await exec(
-      `ffmpeg -y ${inclusions} ${drawText} -t ${timings[i].durationSec} ${context.encoding} out/${book}/chapters/${fileName}.mp4`
+      `ffmpeg -y ${inclusions} ${drawText} -t ${chapter.timing.durationSec} ${context.encoding} ${chapter.generatedVideoFile}`
     );
     await sleep();
   }

@@ -1,8 +1,10 @@
 
-import {beforeEach, describe, expect, test} from '@jest/globals';
+import {beforeEach, describe, expect, it} from '@jest/globals';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import {exec} from './exec';
+import { Config } from './context';
+import * as yaml from 'yaml';
 
 const TEST_BOOK = 'test_book';
 const RESOURCES_DIR = `resource/${TEST_BOOK}`;
@@ -22,6 +24,19 @@ function assertOutputOfCreateTimecodesMatches(output: string) {
     ]);
 }
 
+/**
+ * Helper function to update book config from a test. It should be called after 
+ * ./add-book.ts script has been called.
+ * @param updateFn function to update default Config. It should return a new config
+ *     which will be written to the yaml file.
+ */
+function updateConfig(book: string, updateFn: (config: Config) => Config) {
+    const configFile = `resource/${book}/config.yml`;
+    const config: Config = yaml.parse(fs.readFileSync(configFile, {encoding: 'utf8'}));
+    const updatedConfig = updateFn(config);
+    fs.writeFileSync(configFile, yaml.stringify(updatedConfig));
+}
+
 
 describe('integration', () => {
     beforeEach(async () => {
@@ -30,7 +45,7 @@ describe('integration', () => {
     });
     // Verify that generating sample books produces a video file matching length
     // of total mp3 files duration.
-    test('sample book generated', async () => {
+    it('sample book generated', async () => {
         const options = {
             env: {...process.env, 'BOOK': TEST_BOOK},
             encoding: 'utf8',
@@ -50,4 +65,25 @@ describe('integration', () => {
         // There are two mp3 files, each roughly 5s. Total 11.2s.
         expect(videoLength).toBeCloseTo(11.2, 1);
     }, /* timeout= */ 60_000);
+
+    it('preview mode is working', async () => {
+        const options = {
+            env: {...process.env, 'BOOK': TEST_BOOK},
+            encoding: 'utf8',
+        };
+        await exec(`./add-book.ts`, options);
+
+        // Enable preview_covers.
+        updateConfig(TEST_BOOK, (config) => {
+            return {...config, preview_covers: true};
+        });
+
+        await exec(`./generate-chapters.ts`, options);
+        await exec(`./concat-chapters.ts`, options);
+        const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mp4'));
+        // When preview is enabled each chapter should be generated from a 1sec file,
+        // so total length is 2sec.
+        expect(videoLength).toBeCloseTo(2, 1);
+
+    }, /* timeout= */ 60_000)
 });

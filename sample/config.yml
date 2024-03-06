@@ -1,8 +1,21 @@
+# Options passed to drawtext ffmpeg filter.
+# See https://ffmpeg.org/ffmpeg-filters.html#drawtext-1
 text_options:
   font_size: 78
   font_color: black
+  x: (w-text_w)/2
+  y: (h-text_h)/2
+  font: 
+  # Font file. Should be placed. in resources/{book}
+  fontfile: font.ttf
 
 # Allowed options: video / image
 # Supported image formats: jpg, png.
 # Supported video format: mp4.
 background_mode: image
+
+# When enable, generates each chapter using a 1 sec
+# silence instead of the source audio files. This mode
+# is used to preview text positioning on the video as it
+# speeds up video generation.
+preview_covers: false
