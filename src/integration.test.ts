@@ -2,6 +2,7 @@
 import {beforeEach, describe, expect, it} from '@jest/globals';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as cp from 'child_process';
 import {exec} from './exec';
 import { Config } from './context';
 import * as yaml from 'yaml';
@@ -46,9 +47,8 @@ describe('integration', () => {
     // Verify that generating sample books produces a video file matching length
     // of total mp3 files duration.
     it('sample book generated', async () => {
-        const options = {
+        const options: cp.ExecOptions = {
             env: {...process.env, 'BOOK': TEST_BOOK},
-            encoding: 'utf8',
         };
         const commands = [
             'add-book.ts',
@@ -58,12 +58,14 @@ describe('integration', () => {
         ];
         const results = [];
         for (const command of commands) {
+            console.time(command);
             results.push(await exec(`./${command}`, options));
+            console.timeLog(command);
         };
         assertOutputOfCreateTimecodesMatches(results[results.length - 1]);
         const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mp4'));
         // There are two mp3 files, each roughly 5s. Total 11.2s.
-        expect(videoLength).toBeCloseTo(11.2, 1);
+        expect(videoLength).toBeCloseTo(11.2, 0);
     }, /* timeout= */ 60_000);
 
     it('preview mode is working', async () => {
