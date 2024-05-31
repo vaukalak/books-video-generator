@@ -21,8 +21,9 @@ export interface Config {
     x: string;
     y: string;
   };
-  readonly background_mode: 'image'|'video';
+  readonly background_mode: 'image' | 'video';
   readonly preview_covers: boolean;
+  readonly output_video_format: 'mp4' | 'mkv';
 }
 
 /** Timing of a single chapter. */
@@ -54,21 +55,21 @@ export interface Context {
 }
 
 function readConfig(book: string): Config {
-  return parse(fs.readFileSync(`resource/${book}/config.yml`, {encoding: 'utf8'}));
+  return parse(fs.readFileSync(`resource/${book}/config.yml`, { encoding: 'utf8' }));
 }
 
 function createContext(book: string): Context {
   const outDir = `out/${book}`;
-  fs.mkdirSync(outDir,  { recursive: true });
+  fs.mkdirSync(outDir, { recursive: true });
   return {
     book,
     config: readConfig(book),
     outDir,
-    renderText() { 
-      throw new Error('unset'); 
+    renderText() {
+      throw new Error('unset');
     },
     renderBackground() {
-      throw new Error('unset'); 
+      throw new Error('unset');
     },
     encoding: '',
   };

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { parse } from "csv-parse";
-import { finished } from"stream/promises";
+import { finished } from "stream/promises";
 import { Chapter, Context, Timing } from "./context";
 import { exec } from "./exec";
 
@@ -17,18 +17,18 @@ function getSourceAudio(context: Context, chapterId: number): string {
 }
 
 function getGeneratedVideoFile(context: Context, chapterId: number): string {
-  return `${context.outDir}/chapters/${fid(chapterId)}.mp4`
+  return `${context.outDir}/chapters/${fid(chapterId)}.${context.config.output_video_format}`
 }
 
 async function getTimings(audioFiles: string[]): Promise<Timing[]> {
   console.log('\nGetting audio files lengths:');
   const durations: string[] = await Promise.all(
     audioFiles.map((file) => {
-        return exec(
-          `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${file}`
-        );
-      })
-    );
+      return exec(
+        `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${file}`
+      );
+    })
+  );
   let startTime = 0;
   return durations.map((v) => {
     const duration = parseFloat(v);
@@ -78,6 +78,7 @@ export async function getChapters(context: Context): Promise<Chapter[]> {
       sourceAudioFile: audioFiles[ind],
       timing: timings[ind],
       generatedVideoFile: getGeneratedVideoFile(context, id),
-  }});
+    }
+  });
 }
 
