@@ -1,19 +1,31 @@
 import * as fs from "fs";
 import { parse } from "csv-parse";
-import { finished } from"stream/promises";
+import { finished } from "stream/promises";
 import { Chapter, Context, Timing } from "./context";
 import { exec } from "./exec";
 
+function pad(num: number, size: number): string {
+  let s = num + "";
+  while (s.length < size) s = "0" + s;
+  return s;
+}
+
 export function fid(id: number): string {
-  return `${"0".repeat(3 - id.toString().length)}${id}`;
+  return pad(id, 3);
 }
 
 function getSourceAudio(context: Context, chapterId: number): string {
-  const file = `resource/${context.book}/audio/${fid(chapterId)}.mp3`;
-  if (!fs.existsSync(file)) {
-    throw new Error(`File ${file} not found`);
+  // Try to find audio file with 1, 2 or 3 digits as it's common for audio files to have
+  // xx.mp3 or xxx.mp3 formats.
+  for (let i = 1; i <= 3; i++) {
+    const paddedChapter = pad(chapterId, i);
+    const file = `resource/${context.book}/audio/${paddedChapter}.mp3`;
+    if (fs.existsSync(file)) {
+      return file;
+    }
   }
-  return file;
+  throw new Error(
+    `Audio file for chapter ${chapterId} not found in resource/${context.book}/audio/`);
 }
 
 function getGeneratedVideoFile(context: Context, chapterId: number): string {
@@ -24,11 +36,11 @@ async function getTimings(audioFiles: string[]): Promise<Timing[]> {
   console.log('\nGetting audio files lengths:');
   const durations: string[] = await Promise.all(
     audioFiles.map((file) => {
-        return exec(
-          `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${file}`
-        );
-      })
-    );
+      return exec(
+        `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${file}`
+      );
+    })
+  );
   let startTime = 0;
   return durations.map((v) => {
     const duration = parseFloat(v);
@@ -78,6 +90,7 @@ export async function getChapters(context: Context): Promise<Chapter[]> {
       sourceAudioFile: audioFiles[ind],
       timing: timings[ind],
       generatedVideoFile: getGeneratedVideoFile(context, id),
-  }});
+    }
+  });
 }
 
