@@ -29,7 +29,7 @@ function getSourceAudio(context: Context, chapterId: number): string {
 }
 
 function getGeneratedVideoFile(context: Context, chapterId: number): string {
-  return `${context.outDir}/chapters/${fid(chapterId)}.mp4`
+  return `${context.outDir}/chapters/${fid(chapterId)}.${context.config.output_video_format}`
 }
 
 async function getTimings(audioFiles: string[]): Promise<Timing[]> {

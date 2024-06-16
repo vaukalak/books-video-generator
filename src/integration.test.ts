@@ -68,7 +68,7 @@ describe('integration', () => {
             console.timeLog(command);
         };
         assertOutputOfCreateTimecodesMatches(results[results.length - 1]);
-        const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mp4'));
+        const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mkv'));
         // There are two mp3 files, each roughly 5s. Total 11.2s.
         expectBetween(videoLength, 11.2, 12);
     }, /* timeout= */ 60_000);
@@ -87,11 +87,10 @@ describe('integration', () => {
 
         await exec(`./generate-chapters.ts`, options);
         await exec(`./concat-chapters.ts`, options);
-        const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mp4'));
+        const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mkv'));
         // When preview is enabled each chapter should be generated from a 1sec file,
         // so total length is 2sec.
         expectBetween(videoLength, 2, 2.5);
-
     }, /* timeout= */ 60_000);
 
     it('different length filenames are supported', async () => {
@@ -104,10 +103,28 @@ describe('integration', () => {
         await fs.move(`${RESOURCES_DIR}/audio/001.mp3`, `${RESOURCES_DIR}/audio/01.mp3`);
 
         await exec(`./generate-chapters.ts`, options);
-        const chapter0Length = await getDurationSec(path.join(OUT_DIR, 'chapters/000.mp4'));
+        const chapter0Length = await getDurationSec(path.join(OUT_DIR, 'chapters/000.mkv'));
         expectBetween(chapter0Length, 5.5, 6);
-        const chapter1Length = await getDurationSec(path.join(OUT_DIR, 'chapters/001.mp4'));
+        const chapter1Length = await getDurationSec(path.join(OUT_DIR, 'chapters/001.mkv'));
         expectBetween(chapter1Length, 5.5, 6);
+    }, /* timeout= */ 60_000);
 
+    it('mp4 video format is working', async () => {
+        const options = {
+            env: { ...process.env, 'BOOK': TEST_BOOK },
+            encoding: 'utf8',
+        };
+        await exec(`./add-book.ts`, options);
+
+        // Enable preview_covers.
+        updateConfig(TEST_BOOK, (config) => {
+            return { ...config, output_video_format: 'mp4' };
+        });
+
+        await exec(`./generate-chapters.ts`, options);
+        await exec(`./concat-chapters.ts`, options);
+        const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mp4'));
+        // There are two mp3 files, each roughly 5s. Total 11.2s.
+        expectBetween(videoLength, 11.2, 12);
     }, /* timeout= */ 60_000);
 });

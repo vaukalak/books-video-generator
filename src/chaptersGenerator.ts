@@ -12,16 +12,17 @@ async function sleep(): Promise<undefined> {
 function clean(context: Context) {
   try {
     fs.rmSync(context.outDir, { force: true, recursive: true });
-  } catch {}
+  } catch { }
 }
 
 async function generateChapterVideoFromImage(context: Context, chapter: Chapter) {
   const tempDir = `${context.outDir}/temp`;
   fs.mkdirSync(tempDir, { recursive: true });
+  const format = context.config.output_video_format;
 
   // Generate 1sec video containing chapter name.
   const drawText = `-filter_complex "${context.renderText(chapter)}"`;
-  const oneSecVideo = `${tempDir}/1sec_${chapter.id}.mp4`;
+  const oneSecVideo = `${tempDir}/1sec_${chapter.id}.${format}`;
   await exec(`ffmpeg -y -framerate 24 ${context.renderBackground(
     chapter.timing
   )} ${drawText} -pix_fmt yuv420p -c:v libx264 -preset veryfast -t 1 ${oneSecVideo}`);
@@ -29,7 +30,7 @@ async function generateChapterVideoFromImage(context: Context, chapter: Chapter)
   // Generate full length video with no sound by repeating 1sec video.
   // Video length has to be integer so we make the video slightly
   // longer than audio length. It will be cut to the audio length at the next step.
-  const fullVideoNoSound = `${tempDir}/full_no_sound_${chapter.id}.mp4`;
+  const fullVideoNoSound = `${tempDir}/full_no_sound_${chapter.id}.${format}`;
   const duration = Math.ceil(chapter.timing.durationSec);
   await exec(`ffmpeg -stream_loop ${duration} -i ${oneSecVideo} -c copy ${fullVideoNoSound}`);
 

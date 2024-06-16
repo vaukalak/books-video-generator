@@ -19,3 +19,8 @@ background_mode: image
 # is used to preview text positioning on the video as it
 # speeds up video generation.
 preview_covers: false
+
+# Output video format. Supported formats: mp4, mkv.
+# .mkv is chosen as default as it showed fewer issues when
+# concatenating videos.
+output_video_format: mkv
