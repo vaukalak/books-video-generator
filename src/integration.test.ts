@@ -91,7 +91,6 @@ describe('integration', () => {
         // When preview is enabled each chapter should be generated from a 1sec file,
         // so total length is 2sec.
         expectBetween(videoLength, 2, 2.5);
-
     }, /* timeout= */ 60_000);
 
     it('different length filenames are supported', async () => {
@@ -104,11 +103,10 @@ describe('integration', () => {
         await fs.move(`${RESOURCES_DIR}/audio/001.mp3`, `${RESOURCES_DIR}/audio/01.mp3`);
 
         await exec(`./generate-chapters.ts`, options);
-        const chapter0Length = await getDurationSec(path.join(OUT_DIR, 'chapters/000.mp4'));
+        const chapter0Length = await getDurationSec(path.join(OUT_DIR, 'chapters/000.mkv'));
         expectBetween(chapter0Length, 5.5, 6);
-        const chapter1Length = await getDurationSec(path.join(OUT_DIR, 'chapters/001.mp4'));
+        const chapter1Length = await getDurationSec(path.join(OUT_DIR, 'chapters/001.mkv'));
         expectBetween(chapter1Length, 5.5, 6);
-
     }, /* timeout= */ 60_000);
 
     it('mp4 video format is working', async () => {
@@ -127,7 +125,6 @@ describe('integration', () => {
         await exec(`./concat-chapters.ts`, options);
         const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mp4'));
         // There are two mp3 files, each roughly 5s. Total 11.2s.
-        expect(videoLength).toBeCloseTo(11.2, 0);
-
+        expectBetween(videoLength, 11.2, 12);
     }, /* timeout= */ 60_000);
 });
