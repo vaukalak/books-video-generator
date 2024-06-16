@@ -1,5 +1,5 @@
 
-import { beforeEach, describe, expect, it, fit } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as cp from 'child_process';
@@ -38,6 +38,11 @@ function updateConfig(book: string, updateFn: (config: Config) => Config) {
     fs.writeFileSync(configFile, yaml.stringify(updatedConfig));
 }
 
+function expectBetween(value: number, min: number, max: number) {
+    expect(value).toBeGreaterThanOrEqual(min);
+    expect(value).toBeLessThanOrEqual(max);
+}
+
 
 describe('integration', () => {
     beforeEach(async () => {
@@ -65,7 +70,7 @@ describe('integration', () => {
         assertOutputOfCreateTimecodesMatches(results[results.length - 1]);
         const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mkv'));
         // There are two mp3 files, each roughly 5s. Total 11.2s.
-        expect(videoLength).toBeCloseTo(11.2, 0);
+        expectBetween(videoLength, 11.2, 12);
     }, /* timeout= */ 60_000);
 
     it('preview mode is working', async () => {
@@ -85,7 +90,24 @@ describe('integration', () => {
         const videoLength = await getDurationSec(path.join(OUT_DIR, 'output.mkv'));
         // When preview is enabled each chapter should be generated from a 1sec file,
         // so total length is 2sec.
-        expect(videoLength).toBeCloseTo(2, 0);
+        expectBetween(videoLength, 2, 2.5);
+
+    }, /* timeout= */ 60_000);
+
+    it('different length filenames are supported', async () => {
+        const options: cp.ExecOptions = {
+            env: { ...process.env, 'BOOK': TEST_BOOK },
+        };
+        await exec(`./add-book.ts`, options);
+
+        await fs.move(`${RESOURCES_DIR}/audio/000.mp3`, `${RESOURCES_DIR}/audio/0.mp3`);
+        await fs.move(`${RESOURCES_DIR}/audio/001.mp3`, `${RESOURCES_DIR}/audio/01.mp3`);
+
+        await exec(`./generate-chapters.ts`, options);
+        const chapter0Length = await getDurationSec(path.join(OUT_DIR, 'chapters/000.mp4'));
+        expectBetween(chapter0Length, 5.5, 6);
+        const chapter1Length = await getDurationSec(path.join(OUT_DIR, 'chapters/001.mp4'));
+        expectBetween(chapter1Length, 5.5, 6);
 
     }, /* timeout= */ 60_000);
 
